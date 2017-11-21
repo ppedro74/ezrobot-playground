@@ -11,41 +11,33 @@
 
     public partial class Form1 : Form
     {
-        private struct ServoLimits
-        {
-            public readonly int MaxPosition;
-            public readonly int CenterPosition;
-            public readonly int MinPosition;
-
-            public ServoLimits(int min, int max)
-            {
-                this.MinPosition = min;
-                this.MaxPosition = max;
-                this.CenterPosition = (max - min)/2 + min;
-            }
-        }
-
         private const Servo.ServoPortEnum HeadServoHorizontalPort = Servo.ServoPortEnum.D0;
         private const Servo.ServoPortEnum HeadServoVerticalPort = Servo.ServoPortEnum.D1;
         private const int CameraWidth = 320;
         private const int CameraHeight = 240;
         private const int ServoStepValue = 1;
-        private const int YDiffMargin = CameraWidth/80;
-        private const int XDiffMargin = CameraHeight/80;
+        private const int YDiffMargin = CameraWidth / 80;
+        private const int XDiffMargin = CameraHeight / 80;
 
         private readonly Dictionary<Servo.ServoPortEnum, ServoLimits> mapPortToServoLimits = new Dictionary<Servo.ServoPortEnum, ServoLimits>()
         {
-            {Servo.ServoPortEnum.D0, new ServoLimits(5, 176)}, //Head Horizontal
-            {Servo.ServoPortEnum.D1, new ServoLimits(70, 176)} //Head Vertical 
+            { Servo.ServoPortEnum.D0, new ServoLimits(5, 176) }, //Head Horizontal
+            { Servo.ServoPortEnum.D1, new ServoLimits(70, 176) } //Head Vertical 
         };
 
-        private bool isClosing;
-        private EZB ezb;
-        private EventWaitHandle cameraFrameEventWaitHandle;
-        private EventWaitHandle ezbConnectionStatusChangedWaitHandle;
         private Camera camera;
+
+        private EZB ezb;
+        private EventWaitHandle ezbConnectionStatusChangedWaitHandle;
         private long fpsCounter;
         private bool headTrackingActive;
+        private bool isClosing;
+
+        public Form1()
+        {
+            this.InitializeComponent();
+            this.ImageFileNameTB.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "capture-" + DateTime.Now.ToString("yyyyxMMxddxHHxmmxss") + ".jpg");
+        }
 
         public void WriteDebug(object obj, bool clear = false)
         {
@@ -69,12 +61,6 @@
             }));
         }
 
-        public Form1()
-        {
-            this.InitializeComponent();
-            this.ImageFileNameTB.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "capture-" + DateTime.Now.ToString("yyyyxMMxddxHHxmmxss") + ".jpg");
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             this.ezb = new EZB();
@@ -95,7 +81,6 @@
             this.OneSecondTimer.Enabled = true;
             this.OneSecondTimer.Start();
         }
-
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -128,7 +113,7 @@
             }
 
             //Note: .Tag = "Start Video Recording|Stop Video Recording
-            var labels = this.StartOrStopVideoRecordingButton.Tag.ToString().Split(new[] {'|'});
+            var labels = this.StartOrStopVideoRecordingButton.Tag.ToString().Split(new[] { '|' });
 
             if (!this.camera.AVIIsRecording)
             {
@@ -212,7 +197,6 @@
             this.TakeAPicButton.Enabled = true;
         }
 
-
         private void CameraOnOnStart()
         {
             this.WriteDebug("Camera Started!");
@@ -256,7 +240,6 @@
             this.HeadTracking();
         }
 
-
         private void CameraOnStop()
         {
             this.WriteDebug("Camera Stopped!");
@@ -271,10 +254,9 @@
             this.fpsLabelLabel.Visible = this.FpsLabel.Visible = cnt > 0;
         }
 
-
         private void StartOrStopCamera()
         {
-            var labels = this.StartCameraButton.Tag.ToString().Split(new[] {'|'});
+            var labels = this.StartCameraButton.Tag.ToString().Split(new[] { '|' });
 
             if (this.camera.IsActive)
             {
@@ -297,7 +279,7 @@
         {
             this.StartEZBButton.Invoke(new EventHandler(delegate
             {
-                var labels = this.StartEZBButton.Tag.ToString().Split(new[] {'|'});
+                var labels = this.StartEZBButton.Tag.ToString().Split(new[] { '|' });
                 this.StartEZBButton.Text = this.ezb.IsConnected ? labels[0] : labels[1];
             }));
         }
@@ -317,8 +299,8 @@
 
         private void HeadTrackingButton_Click(object sender, EventArgs e)
         {
-            var button = (Button) sender;
-            var labels = button.Tag.ToString().Split(new[] {'|'});
+            var button = (Button)sender;
+            var labels = button.Tag.ToString().Split(new[] { '|' });
 
             if (this.headTrackingActive)
             {
@@ -368,7 +350,7 @@
             var servoVerticalPosition = this.ezb.Servo.GetServoPosition(HeadServoVerticalPort);
             var servoHorizontalPosition = this.ezb.Servo.GetServoPosition(HeadServoHorizontalPort);
 
-            var yDiff = faceLocation.CenterY - CameraHeight/2;
+            var yDiff = faceLocation.CenterY - CameraHeight / 2;
             if (Math.Abs(yDiff) > YDiffMargin)
             {
                 if (yDiff < 0)
@@ -387,7 +369,7 @@
                 }
             }
 
-            var xDiff = faceLocation.CenterX - CameraWidth/2;
+            var xDiff = faceLocation.CenterX - CameraWidth / 2;
             if (Math.Abs(xDiff) > XDiffMargin)
             {
                 if (xDiff > 0)
@@ -408,6 +390,20 @@
 
             this.ezb.Servo.SetServoPosition(HeadServoVerticalPort, servoVerticalPosition);
             this.ezb.Servo.SetServoPosition(HeadServoHorizontalPort, servoHorizontalPosition);
+        }
+
+        private struct ServoLimits
+        {
+            public readonly int CenterPosition;
+            public readonly int MaxPosition;
+            public readonly int MinPosition;
+
+            public ServoLimits(int min, int max)
+            {
+                this.MinPosition = min;
+                this.MaxPosition = max;
+                this.CenterPosition = (max - min) / 2 + min;
+            }
         }
     }
 }
