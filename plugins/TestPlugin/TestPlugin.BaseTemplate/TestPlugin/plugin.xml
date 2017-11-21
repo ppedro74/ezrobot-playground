@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<PluginV1XML xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FRIENDLY_NAME>Test Plugin</FRIENDLY_NAME>
+  <DLL_FILENAME>TestPlugin.dll</DLL_FILENAME>
+  <AUTHOR_NAME>ptp</AUTHOR_NAME>
+  <LICENSE_URL>http://www.ez-robot.com/tutorials/plugin-license.aspx</LICENSE_URL>
+  <PLUGIN_GUID>03B1FEEC-0A74-4F7B-A9B1-55246A0C5F30</PLUGIN_GUID>
+  <CATEGORY_TYPE>Tests</CATEGORY_TYPE>
+  <DESCRIPTION>This is a Test Plugin</DESCRIPTION>
+  <VersionRelease>1</VersionRelease>
+</PluginV1XML>
