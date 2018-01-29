@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="Command.cs" />
     <Compile Include="ConfigKeys.cs" />
-    <Compile Include="ControlCommandDictionary.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
