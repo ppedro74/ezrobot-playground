@@ -88,12 +88,10 @@
         private void Update()
         {
             //time between updates
-            const int intervalMilliseconds = 100;
+            const int intervalMilliseconds = 500;
 
             //measure the fps only for debug/info purpose 
             this.MeasureFramesPerSecond();
-
-            var x = this.servoStopwatch.ElapsedMilliseconds;
 
             if (this.isFirstUpdate)
             {
@@ -332,19 +330,6 @@
             {
                 var servoValue = FixRotation(degrees, this.inverted, this.middleValue);
                 var clampedValue = this.ClampValue(servoValue);
-
-                //*** To help Debug
-                if (degrees > 0)
-                {
-                    if (this.JointName.Equals("Head_Rotate", StringComparison.OrdinalIgnoreCase))
-                    {
-                    }
-                    else if (this.JointName.Equals("Neck_Up_Down", StringComparison.OrdinalIgnoreCase))
-                    {
-                    }
-                }
-                //***
-
                 return clampedValue;
             }
         }
