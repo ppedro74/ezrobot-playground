@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -27,8 +28,9 @@ namespace MiscUtilityPlugin
 
             this.functions = new[]
             {
+                new CustomFunction("IsHighResolution", new string[] { }, "bool", IsHighResolutionFunction, "returns true when the underlying timer is based on a high-resolution performance counter."),
                 new CustomFunction("Millis", new string[] { }, "Int64", MillisFunction, "returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC"),
-                new CustomFunction("Ticks", new string[] { }, "Int64", TicksFunction, "returns the number of ticks elapsed since January 1, 1 00:00:00 Gregorian Calendar UTC"),
+                new CustomFunction("Ticks", new string[] { }, "Int64", TicksFunction, "returns a long integer representing the tick counter value of the underlying timer mechanism."),
                 new CustomFunction("TicksToMilliseconds", new string[] { "ticks" }, "Double", TicksToMillisecondsFunction, "Convert ticks to milliseconds"),
             };
         }
@@ -58,13 +60,26 @@ namespace MiscUtilityPlugin
                 ticks = Convert.ToInt64(functionArguments[0]);
             }
 
-            var ts = new TimeSpan(ticks);
-            return ts.TotalMilliseconds;
+            //var ts = new TimeSpan(ticks);
+            //return ts.TotalMilliseconds;
+
+            var seconds = ticks / (double)Stopwatch.Frequency;
+            var milliseconds = seconds * 1000;
+
+            return milliseconds;
+        }
+
+        private static object IsHighResolutionFunction(string functionName, object[] functionArguments)
+        {
+            return Stopwatch.IsHighResolution;
         }
 
         private static object TicksFunction(string functionName, object[] functionArguments)
         {
-            return DateTime.UtcNow.Ticks;
+            //return DateTime.UtcNow.Ticks;
+
+            //Note: If Stopwatch.IsHighResolution==false DateTime.UtcNow.Ticks is used
+            return Stopwatch.GetTimestamp();
         }
 
         private static object MillisFunction(string functionName, object[] functionArguments)
