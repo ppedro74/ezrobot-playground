@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<PluginV1XML xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FRIENDLY_NAME>Miscellaneous Utility Plugin</FRIENDLY_NAME>
+  <DLL_FILENAME>MiscUtilityPlugin.dll</DLL_FILENAME>
+  <AUTHOR_NAME>ptp</AUTHOR_NAME>
+  <LICENSE_URL>http://www.ez-robot.com/tutorials/plugin-license.aspx</LICENSE_URL>
+  <PLUGIN_GUID>be5678f2-3db9-4c29-9aad-5d0f67227b9e</PLUGIN_GUID>
+  <CATEGORY_TYPE>Misc</CATEGORY_TYPE>
+  <DESCRIPTION>Miscellaneous Utility Plugin</DESCRIPTION>
+  <VersionRelease>1</VersionRelease>
+</PluginV1XML>
