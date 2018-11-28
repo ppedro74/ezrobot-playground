@@ -32,6 +32,8 @@ namespace MiscUtilityPlugin
                 new CustomFunction("Millis", new string[] { }, "Int64", MillisFunction, "returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC"),
                 new CustomFunction("Ticks", new string[] { }, "Int64", TicksFunction, "returns a long integer representing the tick counter value of the underlying timer mechanism."),
                 new CustomFunction("TicksToMilliseconds", new string[] { "ticks" }, "Double", TicksToMillisecondsFunction, "Convert ticks to milliseconds"),
+                new CustomFunction("DateTimeTicks", new string[] { }, "Int64", DateTimeTicksFunction, "Returns the number of ticks elapsed since January 1, 1 00:00:00 Gregorian Calendar UTC"),
+                new CustomFunction("DateTimeTicksToMilliseconds", new string[] { "ticks" }, "Double", DateTimeTicksToMillisecondsFunction, "Convert DateTime's ticks to milliseconds"),
             };
         }
 
@@ -41,6 +43,27 @@ namespace MiscUtilityPlugin
             {
                 base.OnFormClosing(e);
             }
+        }
+
+        private static object DateTimeTicksToMillisecondsFunction(string functionName, object[] functionArguments)
+        {
+            long ticks;
+
+            var str = functionArguments[0] as string;
+            if (str != null)
+            {
+                if (!long.TryParse(str, out ticks))
+                {
+                    throw new Exception("DateTimeTicksToMilliseconds cannot convert ticks (argument 0) to long");
+                }
+            }
+            else
+            {
+                ticks = Convert.ToInt64(functionArguments[0]);
+            }
+
+            var ts = new TimeSpan(ticks);
+            return ts.TotalMilliseconds;
         }
 
         private static object TicksToMillisecondsFunction(string functionName, object[] functionArguments)
@@ -60,9 +83,6 @@ namespace MiscUtilityPlugin
                 ticks = Convert.ToInt64(functionArguments[0]);
             }
 
-            //var ts = new TimeSpan(ticks);
-            //return ts.TotalMilliseconds;
-
             var seconds = ticks / (double)Stopwatch.Frequency;
             var milliseconds = seconds * 1000;
 
@@ -74,10 +94,13 @@ namespace MiscUtilityPlugin
             return Stopwatch.IsHighResolution;
         }
 
+        private static object DateTimeTicksFunction(string functionName, object[] functionArguments)
+        {
+            return DateTime.UtcNow.Ticks;
+        }
+
         private static object TicksFunction(string functionName, object[] functionArguments)
         {
-            //return DateTime.UtcNow.Ticks;
-
             //Note: If Stopwatch.IsHighResolution==false DateTime.UtcNow.Ticks is used
             return Stopwatch.GetTimestamp();
         }
