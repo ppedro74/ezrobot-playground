@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using EZ_Builder.Scripting;
 
 namespace MiscUtilityPlugin
 {
@@ -34,6 +37,7 @@ namespace MiscUtilityPlugin
                 new CustomFunction("TicksToMilliseconds", new string[] { "ticks" }, "Double", TicksToMillisecondsFunction, "Convert ticks to milliseconds"),
                 new CustomFunction("DateTimeTicks", new string[] { }, "Int64", DateTimeTicksFunction, "Returns the number of ticks elapsed since January 1, 1 00:00:00 Gregorian Calendar UTC"),
                 new CustomFunction("DateTimeTicksToMilliseconds", new string[] { "ticks" }, "Double", DateTimeTicksToMillisecondsFunction, "Convert DateTime's ticks to milliseconds"),
+                new CustomFunction("DataQuery", new string[] { "connection", "query" }, "Int32", DataQueryFunction, ""),
             };
         }
 
@@ -110,6 +114,104 @@ namespace MiscUtilityPlugin
             return new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
         }
 
+        private static object DataQueryFunction(string functionName, object[] functionArguments)
+        {
+            var providerConnectionString = functionArguments[0] as string;
+            var query = functionArguments[1] as string;
+            var limit = functionArguments.Length > 2 ? Convert.ToInt32(functionArguments[2]) : 100;
+            var outputVariable = functionArguments.Length > 3 ? functionArguments[3] as string : "$data_";
+
+            if (string.IsNullOrWhiteSpace(providerConnectionString))
+            {
+                throw new Exception("Argument 0: provider connection string is required");
+            }
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                throw new Exception("Argument 1: query is required");
+            }
+            if (limit<=0)
+            {
+                throw new Exception("Optional argument 2: limit is invalid");
+            }
+
+            if (!IsVariableNameValid(outputVariable, out var errorText))
+            {
+                throw new Exception("Optional argument 3: output variable " + errorText);
+            }
+
+
+
+            var tokens = providerConnectionString.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+            var providerName = tokens[0];
+            var connectionString = tokens[1];
+
+            var dbProviderFactory = DbProviderFactories.GetFactory(providerName);
+            var row = 0;
+
+            using (var dbConnection = dbProviderFactory.CreateConnection())
+            {
+                dbConnection.ConnectionString = connectionString;
+
+                var dbCommand = dbConnection.CreateCommand();
+                dbCommand.CommandText = query;
+                for (var ax = 4; ax < functionArguments.Length; ax++)
+                {
+                    var dbParameter = dbCommand.CreateParameter();
+                    dbParameter.ParameterName = "@" + (ax - 4);
+                    dbParameter.Value = functionArguments[ax];
+                    dbCommand.Parameters.Add(dbParameter);
+                }
+
+
+                dbConnection.Open();
+                using (var dbDataReader = dbCommand.ExecuteReader())
+                {
+                    //Intentional: create empty arrays to return data
+                    var numberOfColumns = dbDataReader.FieldCount;
+                    for (var col = 0; col < numberOfColumns; col++)
+                    {
+                        VariableManager.CreateVariableArray(outputVariable + col, string.Empty, 0);
+                    }
+
+                    for (row = 0; dbDataReader.Read() && row < limit; row++)
+                    {
+                        for (var col = 0; col < numberOfColumns; col++)
+                        {
+                            var value = dbDataReader.IsDBNull(col) ? string.Empty : dbDataReader.GetValue(col);
+                            VariableManager.AppendToVariableArray(outputVariable + col, value);
+                        }
+                    }
+                }
+            }
+
+            return row;
+        }
+
+        public static bool IsVariableNameValid(string value, out string errorText)
+        {
+            errorText = null;
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                errorText = "is required";
+            }
+            else if (value[0] != '$')
+            {
+                errorText = "does not start with $";
+            }
+            else if (value[1] >= '0' && value[1] <= '9')
+            {
+                errorText = "cannot start with a number";
+            }
+            else if (value.Substring(1).Any(ch => !((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch == '_'))))
+            {
+                //only 0-9, A-Z, a-z and _ characters
+                errorText = "has invalid chars";
+            }
+
+            return errorText == null;
+        }
+
         public void WriteDebug(object obj, bool clear = false, bool logTime = true)
         {
             if (!this.IsHandleCreated)
@@ -135,6 +237,7 @@ namespace MiscUtilityPlugin
                         sb.Append(DateTime.Now.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture));
                         sb.Append(">");
                     }
+
                     sb.Append(text);
                     sb.AppendLine();
                     this.LogTextBox.Text = sb.ToString();
@@ -169,11 +272,29 @@ namespace MiscUtilityPlugin
                     customFunction.Name,
                     string.Join(", ", customFunction.ParametersNames.Select(x => "<" + x + ">")),
                     customFunction.ReturnType
-                    );
+                );
                 msg.AppendLine();
 
                 msg.AppendLine();
             }
+
+            msg.Append("==================================");
+            msg.AppendLine();
+
+            msg.Append("====== DbProviderFactories: ======");
+            msg.AppendLine();
+
+            var dt = DbProviderFactories.GetFactoryClasses();
+            foreach (DataRow row in dt.Rows)
+            {
+                foreach (DataColumn col in dt.Columns)
+                {
+                    msg.AppendFormat("{0}=[{1}] ", col.ColumnName, row[col.ColumnName]);
+                }
+
+                msg.AppendLine();
+            }
+
             msg.Append("==================================");
             msg.AppendLine();
 
