@@ -39,12 +39,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EZ-Builder">
-      <HintPath>C:\Program Files (x86)\EZ-Robot Inc\EZ-Builder\EZ-Builder.exe</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Synthiam Inc\EZ-Builder\EZ-Builder.exe</HintPath>
     </Reference>
     <Reference Include="EZ_B">
-      <HintPath>C:\Program Files (x86)\EZ-Robot Inc\EZ-Builder\EZ_B.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Synthiam Inc\EZ-Builder\EZ_B.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -39,14 +40,49 @@ namespace MiscUtilityPlugin
                 new CustomFunction("DateTimeTicksToMilliseconds", new string[] { "ticks" }, "Double", DateTimeTicksToMillisecondsFunction, "Convert DateTime's ticks to milliseconds"),
                 new CustomFunction("DataQuery", new string[] { "connection", "query" }, "Int32", DataQueryFunction, ""),
             };
+
         }
+
+
+
+
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            DebugToFile("OnFormClosing::Begin");
             if (mainForm == this)
             {
                 base.OnFormClosing(e);
             }
+            DebugToFile("OnFormClosing::End");
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            DebugToFile("OnFormClosed::Begin");
+            base.OnFormClosed(e);
+            DebugToFile("OnFormClosed::End");
+        }
+
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DebugToFile("MainForm_FormClosing::Begin");
+            DebugToFile("MainForm_FormClosing::End");
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DebugToFile("MainForm_FormClosed::Begin");
+
+            if (mainForm != this)
+            {
+                return;
+            }
+
+            ExpressionEvaluation.FunctionEval.AdditionalFunctionEvent -= this.FunctionEval_AdditionalFunctionEvent;
+            mainForm = null;
+            DebugToFile("MainForm_FormClosed::End");
         }
 
         private static object DateTimeTicksToMillisecondsFunction(string functionName, object[] functionArguments)
@@ -129,7 +165,7 @@ namespace MiscUtilityPlugin
             {
                 throw new Exception("Argument 1: query is required");
             }
-            if (limit<=0)
+            if (limit <= 0)
             {
                 throw new Exception("Optional argument 2: limit is invalid");
             }
@@ -138,8 +174,6 @@ namespace MiscUtilityPlugin
             {
                 throw new Exception("Optional argument 3: output variable " + errorText);
             }
-
-
 
             var tokens = providerConnectionString.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
             var providerName = tokens[0];
@@ -248,8 +282,29 @@ namespace MiscUtilityPlugin
                 });
         }
 
+        private static void DebugToFile(object obj, bool logTime = true)
+        {
+            var text = obj is Exception ? "=>Error Exception:\r\n" + obj : obj.ToString();
+
+            var sb = new StringBuilder();
+            if (logTime)
+            {
+                sb.Append(DateTime.Now.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture));
+                sb.Append(">");
+            }
+
+            sb.Append(text);
+            sb.AppendLine();
+
+            var logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MiscUtilityPlugin.log");
+            File.AppendAllText(logFile, sb.ToString());
+        }
+
+
         private void MainForm_Load(object sender, EventArgs e)
         {
+            DebugToFile("MainForm_Load::Begin");
+
             if (mainForm != this)
             {
                 return;
@@ -299,18 +354,12 @@ namespace MiscUtilityPlugin
             msg.AppendLine();
 
             this.WriteDebug(msg, false, false);
+
+            DebugToFile("MainForm_Load::End");
+
         }
 
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if (mainForm != this)
-            {
-                return;
-            }
 
-            ExpressionEvaluation.FunctionEval.AdditionalFunctionEvent -= this.FunctionEval_AdditionalFunctionEvent;
-            mainForm = null;
-        }
 
         /// 
         /// This is executed when a function is specified in any ez-scripting that isn't a native function.
@@ -346,5 +395,6 @@ namespace MiscUtilityPlugin
                 return;
             }
         }
+
     }
 }
