@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<PluginV1XML xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <FRIENDLY_NAME>TEST IBM Watson Services</FRIENDLY_NAME>
+    <DLL_FILENAME>WatsonTest.EZPlugin.dll</DLL_FILENAME>
+    <AUTHOR_NAME>ptp</AUTHOR_NAME>
+    <LICENSE_URL>http://www.ez-robot.com/tutorials/plugin-license.aspx</LICENSE_URL>
+    <PLUGIN_GUID>60123699-6108-480A-A519-E3EBFBFE586A</PLUGIN_GUID>
+    <CATEGORY_TYPE>Audio</CATEGORY_TYPE>
+    <DESCRIPTION />
+    <VersionRelease>1</VersionRelease>
+</PluginV1XML>

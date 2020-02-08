@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BD045698-09B6-42BF-A519-A6E57EF0A500}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WatsonTest.EZPlugin</RootNamespace>
+    <AssemblyName>WatsonTest.EZPlugin</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EZ-Builder">
+      <HintPath>c:\Program Files (x86)\Synthiam Inc\EZ-Builder\EZ-Builder.exe</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="EZ_B">
+      <HintPath>c:\Program Files (x86)\Synthiam Inc\EZ-Builder\EZ_B.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="plugin.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="title.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="WatsonTest.EZPlugin.ezb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="IBM.Watson.TextToSpeech.v1">
+      <Version>4.2.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del /Q ..\plugin\*.*
+
+rem xcopy /Y /I $(OutDir)Newtonsoft.Json-6.0.dll ..\plugin
+rem xcopy /Y /I $(OutDir)Newtonsoft.Json.dll ..\plugin
+rem xcopy /Y /I $(OutDir)System.Net.Http.dll ..\plugin
+rem xcopy /Y /I $(OutDir)System.Net.Http.Formatting.dll ..\plugin
+rem xcopy /Y /I $(OutDir)IBM.WatsonDeveloperCloud*.* ..\plugin
+rem xcopy /Y /I $(OutDir)INIFileParser.* ..\plugin
+rem xcopy /Y /I $(OutDir)EZBuilder.Plugin.Common.* ..\plugin
+rem xcopy /Y /I $(OutDir)WatsonTest.EZPlugin.* ..\plugin
+
+xcopy /Y /I $(OutDir)*.dll ..\plugin
+xcopy /Y /I $(OutDir)plugin.xml ..\plugin
+xcopy /Y /I $(OutDir)title.png ..\plugin
+xcopy /Y /I ..\plugin\*.* "C:\Users\Public\Documents\EZ-Builder\Plugins\60123699-6108-480A-A519-E3EBFBFE586A\"
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del /Q "C:\Users\Public\Documents\EZ-Builder\Plugins\60123699-6108-480A-A519-E3EBFBFE586A\*.*"
+</PreBuildEvent>
+  </PropertyGroup>
+</Project>

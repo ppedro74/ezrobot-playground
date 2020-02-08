@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2046
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatsonTest.EZPlugin", "WatsonTest.EZPlugin\WatsonTest.EZPlugin.csproj", "{BD045698-09B6-42BF-A519-A6E57EF0A500}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatsonTest.WinForms", "WatsonTest.WinForms\WatsonTest.WinForms.csproj", "{F4852C0F-3DE3-4639-98CB-BD1B427901DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD045698-09B6-42BF-A519-A6E57EF0A500}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD045698-09B6-42BF-A519-A6E57EF0A500}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD045698-09B6-42BF-A519-A6E57EF0A500}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD045698-09B6-42BF-A519-A6E57EF0A500}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4852C0F-3DE3-4639-98CB-BD1B427901DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4852C0F-3DE3-4639-98CB-BD1B427901DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4852C0F-3DE3-4639-98CB-BD1B427901DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4852C0F-3DE3-4639-98CB-BD1B427901DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF59C640-B4A0-45E9-B1FE-9E59E5CAFD00}
+	EndGlobalSection
+EndGlobal
