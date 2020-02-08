@@ -7,7 +7,7 @@
   <UCControlHeight>901</UCControlHeight>
   <EZBuilderVersionMajor>2019</EZBuilderVersionMajor>
   <EZBuilderVersionMinor>12</EZBuilderVersionMinor>
-  <EZBuilderVersionBuild>8</EZBuilderVersionBuild>
+  <EZBuilderVersionBuild>9</EZBuilderVersionBuild>
   <EZRobot>
     <AppIDOwnerHASH />
     <DefaultControlMobile>Desktop</DefaultControlMobile>
@@ -225,7 +225,7 @@ ENDIF
       <Width>615</Width>
       <Height>258</Height>
       <WindowState>Normal</WindowState>
-      <GUID>ec9b1289-7484-4d0a-9552-af275687cb4a</GUID>
+      <GUID>257075a6-de42-4beb-bf66-c8b41dfaf2af</GUID>
       <Desktop>0</Desktop>
       <PluginV1>
         <_pluginGUID>be5678f2-3db9-4c29-9aad-5d0f67227b9e</_pluginGUID>
